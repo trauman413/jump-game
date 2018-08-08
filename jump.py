@@ -7,6 +7,10 @@ SCREEN_HEIGHT = 600
 
 # Used to initialize game
 pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load("overthere.mp3")
+pygame.mixer.music.play(-1,0.0)
+
 
 # Used to set window caption
 pygame.display.set_caption("Jump Game")
