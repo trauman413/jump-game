@@ -5,6 +5,11 @@ from pygame.locals import *
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+
+# colors
+grey = (192,192,192)
+purple = (199,17,205)
+
 # Used to initialize game
 pygame.init()
 pygame.mixer.init()
@@ -20,10 +25,43 @@ class Background(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
         self.image = pygame.image.load(image_file)
         self.rect = self.image.get_rect()
-        #self.rect.left, self.rect.top = location
 
 sky = Background("sky.jpg")
 
+class Rectangle():
+    def __init__(self,x,y,w,h,color):
+        self.x = x
+        self.y = y
+        self.width = w
+        self.height = h
+        self.color = color
+    def draw(self,screen):
+        pygame.draw.rect(screen,self.color,pygame.Rect(self.x,self.y,self.width,self.height))
+
+rec1 = Rectangle(100,300,100,30,grey)
+rec2 = Rectangle(600,300,100,30,grey)
+rec3 = Rectangle(350,100,100,30,grey)
+
+class Player():
+    def __init__(self,color):
+        self.x = SCREEN_WIDTH/2
+        self.y = SCREEN_HEIGHT - 50
+        self.color = color
+        self.width = 60
+        self.height = 100
+    def check_boundary(self):
+        if self.x >= SCREEN_WIDTH:
+            self.x = 1
+        if self.x <= 0:
+            self.x = SCREEN_WIDTH - 1
+        if self.y >= SCREEN_HEIGHT:
+            self.y = 1
+        if self.y <= 0:
+            self.y = SCREEN_HEIGHT -1
+    def detect(self,rect):
+        if self.x in list(range(rect.x
+
+player = Player(purple)
 
 def main():
     # Sets the screen, parameter: tuple with length and width
@@ -31,6 +69,7 @@ def main():
     screen.fill((255,255,255))
     start = True
     done = False
+    pygame.key.set_repeat(10,10)
     while not done:
         # empties the event queue; necessary to see actions.
         for event in pygame.event.get():
@@ -61,6 +100,7 @@ def main():
                     newscreen(screen)
                 pressed = pygame.key.get_pressed()
                 if event.type == pygame.KEYDOWN:
+                    movement(screen,event)
                     if pressed[pygame.K_x]:
                         done = True
                 if event.type == pygame.QUIT:
@@ -71,8 +111,25 @@ def main():
 def newscreen(screen):
     screen.fill((0,0,0))
     screen.blit(sky.image,sky.rect)
+    rec1.draw(screen)
+    rec2.draw(screen)
+    rec3.draw(screen)
+    pygame.draw.rect(screen,player.color,pygame.Rect(player.x,player.y,player.width,player.height))
 
-
+def movement(screen,event):
+    pressed = pygame.key.get_pressed()
+    if event.type == pygame.KEYDOWN:
+        if pressed[pygame.K_SPACE]:
+            is_blue = not is_blue
+        if pressed[pygame.K_UP]:
+            player.y -= 3
+        if pressed[pygame.K_DOWN]:
+            player.y += 3
+        if pressed[pygame.K_LEFT]:
+            player.x -= 3
+        if pressed[pygame.K_RIGHT]:
+            player.x += 3
+        player.check_boundary()
 
 if __name__ == "__main__":
     main()
